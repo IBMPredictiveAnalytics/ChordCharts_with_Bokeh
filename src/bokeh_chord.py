@@ -10,8 +10,12 @@ if len(sys.argv) > 1 and sys.argv[1] == "-test":
     source_field = 'source'
     dest_field = 'dest'
     value_field = ''
-    output_option = 'output_to_file'
+    output_option = 'output_to_screen'
     output_path = '/tmp/foo.html'
+    output_width = 1024
+    output_height = 1024
+    title_font_size = 32
+    title = "Test"
 else:
     import spss.pyspark.runtime
     ascontext = spss.pyspark.runtime.getContext()
@@ -23,6 +27,10 @@ else:
     value_field = '%%value_field%%'
     output_option = '%%output_option%%'
     output_path = '%%output_path%%'
+    output_width = int('%%output_width%%')
+    output_height = int('%%output_height%%')
+    title_font_size = int('%%title_font_size%%')
+    title = '%%title%%'
 
 majVersion = int(bokeh.__version__.split(".")[0])
 minVersion = int(bokeh.__version__.split(".")[1])
@@ -36,6 +44,13 @@ df = df.loc[lambda rec:rec.__getattr__(source_field) != rec.__getattr__(dest_fie
 args = { 'source':source_field, 'target':dest_field }
 if value_field:
     args['value'] = value_field
+
+
+args["width"]=output_width
+args["height"]=output_height
+args["title"]=title
+args["title_text_font_size"]=str(title_font_size)+"pt"
+
 chord_from_df = Chord(df, **args)
 
 if output_option == 'output_to_file':
